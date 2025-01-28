@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Cuenta Historia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            background-color: white;
+            width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .chat-box {
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #fafafa;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .bot-message {
+            background-color: #e0f7fa;
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background-color: #c8e6c9;
+            align-self: flex-end;
+        }
+
+        .user-input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .send-btn {
+            background-color: #00796b;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .send-btn:hover {
+            background-color: #004d40;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div id="chat-box" class="chat-box">
+            <div class="message bot-message">¡Hola! Soy tu narrador virtual. ¿Te gustaría escuchar la historia de Bomi?</div>
+        </div>
+        <input type="text" id="user-input" class="user-input" placeholder="Escribe algo...">
+        <button id="send-btn" class="send-btn">Enviar</button>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        const userInput = document.getElementById("user-input");
+        const sendBtn = document.getElementById("send-btn");
+
+        const storyParts = [
+            "Había una vez, en una ciudad llena de historia y cultura, una universitaria llamada Bomi. Ella vivía en un pequeño apartamento cerca de la universidad y estaba muy enfocada en sus estudios de literatura. Desde pequeña, Bomi había soñado con ser escritora, y ahora que estaba en la universidad, todo lo que quería era sumergirse en los libros y las palabras.",
+            "Pero algo en su vida universitaria era diferente. A pesar de ser muy dedicada, Bomi sentía que algo le faltaba. Los días eran largos, llenos de clases, tareas y proyectos, pero las noches eran solitarias. Mientras sus compañeros se reunían en cafeterías, organizaban salidas y compartían risas, ella se sumergía en la escritura y la lectura, pero también en la incertidumbre de no encontrar su lugar.",
+            "Un día, mientras paseaba por el parque cercano a la universidad, Bomi conoció a un hombre llamado Luis, un estudiante de filosofía con una pasión por el arte y la música. Luis no era como los demás; era tranquilo y observador, siempre lleno de preguntas sobre el mundo. Durante su encuentro casual, Bomi le confesó cómo se sentía atrapada en su rutina académica y cómo deseaba escribir algo más allá de los ensayos universitarios.",
+            "Luis, con su manera filosófica de ver la vida, le sugirió algo que cambiaría su perspectiva: “A veces, Bomi, la vida no se trata solo de lo que aprendes en los libros, sino de lo que vives fuera de ellos. ¿Qué te parecería escribir sobre lo que sientes, lo que ves y lo que no se enseña en clase?”",
+            "Intrigada por sus palabras, Bomi decidió seguir su consejo. Empezó a salir más, a explorar la ciudad, a observar las pequeñas historias que pasaban desapercibidas para muchos. Descubrió que en cada rincón de su vida había material para sus relatos: un café lleno de conversaciones sinceras, un atardecer solitario en la azotea de su edificio, una caminata bajo la lluvia que la hizo reflexionar sobre el paso del tiempo.",
+            "Con el tiempo, Bomi dejó de sentir que su vida universitaria era vacía. Comenzó a llenar sus días con pequeñas aventuras y experiencias que alimentaban su alma. Lo más sorprendente fue que, al escribir sobre sus vivencias, su creatividad floreció de una manera que nunca había imaginado. El simple acto de vivir plenamente le dio las herramientas para escribir lo más profundo de su corazón.",
+            "Su primer libro, inspirado en esos momentos cotidianos pero significativos, fue un éxito entre sus compañeros y profesores. Bomi aprendió que la clave para encontrar su lugar no estaba solo en los libros, sino en vivir con curiosidad, valentía y un corazón abierto. Y a veces, las historias más grandes se encuentran en las pequeñas experiencias que, al ser contadas, pueden tocar los corazones de otros.",
+            "Así, Bomi dejó de ser solo una universitaria más y se convirtió en una escritora capaz de capturar la esencia de la vida en sus palabras."
+        ];
+
+        let partIndex = 0;
+
+        function displayMessage(message, isBot) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+            messageDiv.classList.add(isBot ? "bot-message" : "user-message");
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (isBot) {
+                speak(message);  // Bot speaks the message
+            }
+        }
+
+        function speak(message) {
+            const speech = new SpeechSynthesisUtterance(message);
+            speech.lang = "es-ES"; // Set language to Spanish
+            speech.volume = 1; // Volume: 0 to 1
+            speech.rate = 1; // Speed: 0.1 to 10
+            speech.pitch = 1; // Pitch: 0 to 2
+            window.speechSynthesis.speak(speech);
+        }
+
+        function handleUserInput() {
+            const userMessage = userInput.value.trim();
+            if (userMessage !== "") {
+                displayMessage(userMessage, false);
+                userInput.value = "";
+                setTimeout(() => {
+                    if (partIndex < storyParts.length) {
+                        displayMessage(storyParts[partIndex], true);
+                        partIndex++;
+                    } else {
+                        displayMessage("¡Gracias por escuchar la historia de Bomi! Si quieres escucharla de nuevo, solo di algo.", true);
+                    }
+                }, 1000);
+            }
+        }
+
+        sendBtn.addEventListener("click", handleUserInput);
+        userInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                handleUserInput();
+            }
+        });
+    </script>
+</body>
+</html>
